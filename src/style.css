@@ -6,4 +6,5 @@ canvas {
   border: 3px solid black;
   border-radius: 0.5rem;
   background-color: transparent;
+  margin: auto;
 }
