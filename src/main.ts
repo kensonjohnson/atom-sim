@@ -26,19 +26,19 @@ interface Rules {
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 1000;
 const NUMBER_OF_ATOMS = 700;
-const ATOM_SIZE = 8;
-const ATOM_EFFECT_RADIUS = 200; // the distance an atom can apply its rules to other atoms
-const VELOCITY_BRAKE = 0.8; // Determines how quickly the atoms accelerate
+const ATOM_SIZE = 3;
+const ATOM_EFFECT_RADIUS = 230; // the distance an atom can apply its rules to other atoms
+const VELOCITY_BRAKE = 0.7; // Determines how quickly the atoms accelerate
 
 // ---------------- Rules ---------------- //
 
-const YELLOW_RULES = { yellow: 0.1, red: 0.0001, green: 0.2, blue: -0.0002 };
-const RED_RULES = { yellow: 0.0001, red: 0.1, green: 0.34, blue: -0.0002 };
-const GREEN_RULES = { yellow: -0.34, red: 0.17, green: 0.32, blue: -0.0002 };
+const YELLOW_RULES = { yellow: 0.1, red: -0.1, green: 0.2, blue: -0.003 };
+const RED_RULES = { yellow: 0.1, red: 0.05, green: 0.5, blue: -0.0015 };
+const GREEN_RULES = { yellow: -0.2, red: 0.2, green: 0.35, blue: -0.0015 };
 const BLUE_RULES = {
   yellow: 0.0005,
-  red: 0.0002,
-  green: 0.0002,
+  red: 0.0005,
+  green: 0.0005,
   blue: -0.001,
 };
 
@@ -193,7 +193,7 @@ const greenGroup = createAtomGroup(
   GREEN_RULES
 );
 const blueGroup = createAtomGroup(
-  NUMBER_OF_ATOMS,
+  1200,
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   "blue",
