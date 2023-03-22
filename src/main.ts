@@ -25,8 +25,8 @@ interface Rules {
 // ---------------- Globals ---------------- //
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 1000;
-const NUMBER_OF_ATOMS = 700;
-const ATOM_SIZE = 3;
+const NUMBER_OF_ATOMS = 200;
+const ATOM_SIZE = 4;
 const ATOM_EFFECT_RADIUS = 230; // the distance an atom can apply its rules to other atoms
 const VELOCITY_BRAKE = 0.7; // Determines how quickly the atoms accelerate
 
@@ -49,19 +49,27 @@ canvas.height = CANVAS_HEIGHT;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 // Fills the entire canvas with a specified color
-function renderRectangle(color: string, width: number, height: number) {
+function renderRectangle(
+  context: CanvasRenderingContext2D,
+  color: string,
+  width: number,
+  height: number
+) {
   context.fillStyle = color; // set the background color of the rectangle
   context.fillRect(0, 0, width, height); // position 0,0 and globally set width and height
 }
 
 function renderAtom(
+  context: CanvasRenderingContext2D,
   xPosition: number,
   yPosition: number,
   color: string,
   size: number
 ) {
+  context.beginPath();
+  context.arc(xPosition, yPosition, size / 2, 0, 2 * Math.PI, false);
   context.fillStyle = color; // set the background color of the atom
-  context.fillRect(xPosition, yPosition, size, size); // position 0,0 and globally set width and height
+  context.fill();
 }
 
 function createAtom(color: string, width: number, height: number): Atom {
@@ -114,9 +122,15 @@ function updateScreen(
     }
   }
   canvasContext.clearRect(0, 0, width, height);
-  renderRectangle("black", width, height);
+  renderRectangle(canvasContext, "black", width, height);
   for (const atom of atomsArray) {
-    renderAtom(atom.xPosition, atom.yPosition, atom.color, atomSize);
+    renderAtom(
+      canvasContext,
+      atom.xPosition,
+      atom.yPosition,
+      atom.color,
+      atomSize
+    );
   }
   requestAnimationFrame(() => {
     updateScreen(
@@ -193,7 +207,7 @@ const greenGroup = createAtomGroup(
   GREEN_RULES
 );
 const blueGroup = createAtomGroup(
-  1200,
+  NUMBER_OF_ATOMS,
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   "blue",
