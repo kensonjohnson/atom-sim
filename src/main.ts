@@ -1,26 +1,42 @@
 import "./style.css";
 import { createAtomGroup, Atom } from "./AtomModels";
 import { updateScreen } from "./ViewController";
+import { randomFloat } from "./EnvironmentConroller";
 
 // ---------------- Globals ---------------- //
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 1000;
 const NUMBER_OF_ATOMS = 500;
 const ATOM_SIZE = 4;
-const GRAVITY_WELL = 0.00001; // Determine each atom's attraction to the center point
+const GRAVITY_WELL = 0.0000005; // Determine each atom's attraction to the center point
 const ATOM_EFFECT_RADIUS = 300; // the distance an atom can apply its rules to other atoms
 const VELOCITY_BRAKE = 0.55; // Determines how quickly the atoms accelerate, smaller is slower
 
 // ---------------- Rules ---------------- //
 
-const YELLOW_RULES = { yellow: 0.01, red: -0.2, green: 0.2, blue: -0.0055 };
-const RED_RULES = { yellow: 0.1, red: -0.05, green: 0.4, blue: -0.0055 };
-const GREEN_RULES = { yellow: -0.15, red: 0.2, green: 0.35, blue: -0.0055 };
+const YELLOW_RULES = {
+  yellow: randomFloat(),
+  red: randomFloat(),
+  green: randomFloat(),
+  blue: randomFloat(),
+};
+const RED_RULES = {
+  yellow: randomFloat(),
+  red: randomFloat(),
+  green: randomFloat(),
+  blue: randomFloat(),
+};
+const GREEN_RULES = {
+  yellow: randomFloat(),
+  red: randomFloat(),
+  green: randomFloat(),
+  blue: randomFloat(),
+};
 const BLUE_RULES = {
-  yellow: 0.002,
-  red: 0.002,
-  green: 0.002,
-  blue: -0.005,
+  yellow: randomFloat(),
+  red: randomFloat(),
+  green: randomFloat(),
+  blue: randomFloat(),
 };
 
 // ---------------- Canvas ---------------- //
