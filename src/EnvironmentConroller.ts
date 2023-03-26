@@ -20,6 +20,8 @@ export function applyRule(
   const centerX = width / 2;
   const centerY = height / 2;
   for (const baseAtom of atomGroup1) {
+    baseAtom.visualXPosition = baseAtom.xPosition;
+    baseAtom.visualYPosition = baseAtom.yPosition;
     let forceOfX = 0;
     let forceOfY = 0;
     let forceOfGravityX = 0;
