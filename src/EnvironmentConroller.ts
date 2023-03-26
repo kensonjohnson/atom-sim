@@ -30,17 +30,14 @@ export function applyRule(
       const deltaToCenterX = baseAtom.xPosition - centerX;
       const deltaToCenterY = baseAtom.yPosition - centerY;
       const distance = Math.sqrt(deltaOfX * deltaOfX + deltaOfY * deltaOfY);
-      const distanceToCenter = Math.sqrt(
-        deltaToCenterX * deltaToCenterX + deltaToCenterY * deltaToCenterY
-      );
       if (distance && distance < effectRadius) {
         const force = attractionForce * (1 / distance);
         forceOfX -= force * deltaOfX;
         forceOfY -= force * deltaOfY;
       }
-      const gravityForce = gravityWell * (1 / distanceToCenter);
-      forceOfGravityX -= gravityForce * deltaToCenterX;
-      forceOfGravityY -= gravityForce * deltaToCenterY;
+      // const gravityForce = gravityWell * (1 / distanceToCenter);
+      forceOfGravityX -= gravityWell * deltaToCenterX;
+      forceOfGravityY -= gravityWell * deltaToCenterY;
     }
     baseAtom.xVelocity =
       (baseAtom.xVelocity + forceOfX + forceOfGravityX) * velocityBrake;
@@ -57,4 +54,9 @@ export function applyRule(
       baseAtom.yVelocity *= -1;
     }
   }
+}
+
+// Generates a float value between -1.0 to 1.0
+export function randomFloat() {
+  return Math.random() * 2 - 1;
 }
