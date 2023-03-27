@@ -1,14 +1,15 @@
 import { Atom, AtomGroup } from "./AtomModels";
 
 export class DisplayController {
-  fps: number;
-  updatesPerSecond: number;
+  targetFrameRate: number;
+  totalFramesRendered: number;
+  averageFrameRate: number;
   isPlaying: boolean;
   time: number | null;
   lastFrame: number;
   frame: number;
   delay: number;
-  tref: number | null;
+  timerReference: number | null;
   canvasContext: CanvasRenderingContext2D;
   width: number;
   height: number;
@@ -18,7 +19,6 @@ export class DisplayController {
 
   constructor(
     fps: number = 5,
-    updatesPerSecond: number,
     canvasContext: CanvasRenderingContext2D,
     atomsArray: Atom[],
     atomGroups: AtomGroup[],
@@ -26,14 +26,15 @@ export class DisplayController {
     height: number,
     atomSize: number
   ) {
-    this.fps = fps;
-    this.updatesPerSecond = updatesPerSecond;
+    this.targetFrameRate = fps;
+    this.totalFramesRendered = 0;
+    this.averageFrameRate = 0;
     this.isPlaying = false;
     this.time = null;
     this.lastFrame = -1;
     this.frame = 0;
     this.delay = 1000 / fps;
-    this.tref = null;
+    this.timerReference = null;
     this.canvasContext = canvasContext;
     this.width = width;
     this.height = height;
@@ -42,24 +43,27 @@ export class DisplayController {
     this.atomSize = atomSize;
   }
 
-  changeFrameRate(newFrameRate: number) {
-    this.fps = newFrameRate;
-    this.delay = 1000 / newFrameRate;
+  changeFrameRate(newTargetFrameRate: number) {
+    this.targetFrameRate = newTargetFrameRate;
+    this.delay = 1000 / newTargetFrameRate;
     this.lastFrame = -1;
+    this.frame = 0;
+    this.totalFramesRendered = 0;
+    this.averageFrameRate = 0;
     this.time = null;
   }
 
   start() {
     if (!this.isPlaying) {
       this.isPlaying = true;
-      this.tref = requestAnimationFrame((timestamp) => {
+      this.timerReference = requestAnimationFrame((timestamp) => {
         this.updateScreen(timestamp);
       });
     }
   }
   pause() {
     if (this.isPlaying) {
-      cancelAnimationFrame(this.tref as number);
+      cancelAnimationFrame(this.timerReference as number);
       this.isPlaying = false;
       this.time = null;
       this.lastFrame = -1;
@@ -69,8 +73,8 @@ export class DisplayController {
   private renderAtom(atom: Atom) {
     this.canvasContext.beginPath();
     this.canvasContext.arc(
-      atom.visualXPosition,
-      atom.visualYPosition,
+      atom.xPosition,
+      atom.yPosition,
       this.atomSize / 2,
       0,
       2 * Math.PI,
@@ -84,15 +88,19 @@ export class DisplayController {
     if (!this.time) {
       this.time = timestamp;
     }
-    this.frame = Math.floor((timestamp - this.time) / this.delay);
+    const timeDelta = timestamp - this.time;
+    this.frame = Math.floor(timeDelta / this.delay);
     if (this.frame > this.lastFrame) {
+      this.totalFramesRendered++;
+      this.averageFrameRate = this.totalFramesRendered / (timeDelta / 1000);
+      console.log(this.averageFrameRate);
       this.lastFrame = this.frame;
       this.canvasContext.clearRect(0, 0, this.width, this.height);
       for (const atom of this.atomsArray) {
         this.renderAtom(atom);
       }
     }
-    this.tref = requestAnimationFrame((timestamp) => {
+    this.timerReference = requestAnimationFrame((timestamp) => {
       this.updateScreen(timestamp);
     });
   }
