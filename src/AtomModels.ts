@@ -3,8 +3,6 @@ import { Rules } from "./EnvironmentConroller";
 export type Atom = {
   xPosition: number;
   yPosition: number;
-  visualXPosition: number;
-  visualYPosition: number;
   xVelocity: number;
   yVelocity: number;
   color: string;
@@ -17,13 +15,9 @@ export type AtomGroup = {
 };
 
 function createAtom(color: string, width: number, height: number): Atom {
-  const randomX = Math.random() * width;
-  const randomY = Math.random() * height;
   return {
-    xPosition: randomX,
+    xPosition: Math.random() * width,
     yPosition: Math.random() * height,
-    visualXPosition: randomX,
-    visualYPosition: randomY,
     xVelocity: 0,
     yVelocity: 0,
     color,
