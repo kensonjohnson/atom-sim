@@ -14,17 +14,15 @@ export class DisplayController {
   width: number;
   height: number;
   atomsArray: Atom[];
-  atomGroups: AtomGroup[];
   atomSize: number;
 
   constructor(
-    fps: number = 5,
     canvasContext: CanvasRenderingContext2D,
     atomsArray: Atom[],
-    atomGroups: AtomGroup[],
     width: number,
     height: number,
-    atomSize: number
+    fps: number = 24,
+    atomSize: number = 5
   ) {
     this.targetFrameRate = fps;
     this.totalFramesRendered = 0;
@@ -39,7 +37,6 @@ export class DisplayController {
     this.width = width;
     this.height = height;
     this.atomsArray = atomsArray;
-    this.atomGroups = atomGroups;
     this.atomSize = atomSize;
   }
 

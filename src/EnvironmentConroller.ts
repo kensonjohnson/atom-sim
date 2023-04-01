@@ -1,4 +1,4 @@
-import { AtomGroup } from "./AtomModels";
+import { AtomGroup, createAtomGroup } from "./AtomModels";
 
 export interface Rules {
   yellow: number;
@@ -14,9 +14,14 @@ export interface Rules {
 // GRAVITY_WELL
 
 export class EnvironmentConroller {
+  private yellowAtomGroup: AtomGroup;
+  private redAtomGroup: AtomGroup;
+  private greenAtomGroup: AtomGroup;
+  private blueAtomGroup: AtomGroup;
   private allAtomGroups: AtomGroup[];
   width: number;
   height: number;
+  numberOfAtoms: number;
   atomEffectRadius: number;
   velocityBrake: number;
   gravityForce: number;
@@ -24,18 +29,59 @@ export class EnvironmentConroller {
   intervalTimerReference: number | null;
   nextActionDelay: number;
   constructor(
-    allAtomGroups: AtomGroup[],
     width: number,
     height: number,
-    atomEffectRadius: number,
-    velocityBrake: number,
-    gravityForce: number,
-    updatesPerSecond: number
+    numberOfAtoms: number = 500,
+    atomEffectRadius: number = 300,
+    velocityBrake: number = 0.4,
+    gravityForce: number = 0.00002,
+    updatesPerSecond: number = 8
   ) {
-    console.log(width, height);
-    this.allAtomGroups = allAtomGroups;
+    this.yellowAtomGroup = createAtomGroup(
+      numberOfAtoms,
+      width,
+      height,
+      "yellow",
+      {
+        yellow: randomFloat(),
+        red: randomFloat(),
+        green: randomFloat(),
+        blue: randomFloat(),
+      }
+    );
+    this.redAtomGroup = createAtomGroup(numberOfAtoms, width, height, "red", {
+      yellow: randomFloat(),
+      red: randomFloat(),
+      green: randomFloat(),
+      blue: randomFloat(),
+    });
+    this.greenAtomGroup = createAtomGroup(
+      numberOfAtoms,
+      width,
+      height,
+      "green",
+      {
+        yellow: randomFloat(),
+        red: randomFloat(),
+        green: randomFloat(),
+        blue: randomFloat(),
+      }
+    );
+    this.blueAtomGroup = createAtomGroup(numberOfAtoms, width, height, "blue", {
+      yellow: randomFloat(),
+      red: randomFloat(),
+      green: randomFloat(),
+      blue: randomFloat(),
+    });
+    this.allAtomGroups = [
+      this.yellowAtomGroup,
+      this.redAtomGroup,
+      this.greenAtomGroup,
+      this.blueAtomGroup,
+    ];
     this.width = width;
     this.height = height;
+    this.numberOfAtoms = numberOfAtoms;
     this.atomEffectRadius = atomEffectRadius;
     this.velocityBrake = velocityBrake;
     this.gravityForce = gravityForce;
@@ -44,10 +90,28 @@ export class EnvironmentConroller {
     this.nextActionDelay = 1000 / updatesPerSecond;
   }
 
+  getAtoms() {
+    return [
+      ...this.yellowAtomGroup.atoms,
+      ...this.redAtomGroup.atoms,
+      ...this.greenAtomGroup.atoms,
+      ...this.blueAtomGroup.atoms,
+    ];
+  }
+
   start() {
-    this.intervalTimerReference = setInterval(() => {
-      this.updateAtomTargetPositions();
-    }, this.nextActionDelay);
+    if (!this.intervalTimerReference) {
+      this.intervalTimerReference = setInterval(() => {
+        this.updateAtomTargetPositions();
+      }, this.nextActionDelay);
+    }
+  }
+
+  pause() {
+    if (this.intervalTimerReference) {
+      clearInterval(this.intervalTimerReference);
+    }
+    this.intervalTimerReference = null;
   }
 
   private updateAtomTargetPositions() {
@@ -94,7 +158,7 @@ export class EnvironmentConroller {
           if (baseAtom.xPosition > this.width && baseAtom.xVelocity > 0) {
             baseAtom.xVelocity *= -1;
           }
-          if (baseAtom.yPosition < 0 && baseAtom.xVelocity < 0) {
+          if (baseAtom.yPosition < 0 && baseAtom.yVelocity < 0) {
             baseAtom.yVelocity *= -1;
           }
           if (baseAtom.yPosition > this.height && baseAtom.yVelocity > 0) {
