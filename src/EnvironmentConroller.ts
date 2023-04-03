@@ -33,9 +33,9 @@ export class EnvironmentConroller {
     height: number,
     numberOfAtoms: number = 500,
     atomEffectRadius: number = 300,
-    velocityBrake: number = 0.4,
+    velocityBrake: number = 0.3,
     gravityForce: number = 0.00002,
-    updatesPerSecond: number = 8
+    updatesPerSecond: number = 5
   ) {
     this.yellowAtomGroup = createAtomGroup(
       numberOfAtoms,
@@ -99,6 +99,11 @@ export class EnvironmentConroller {
     ];
   }
 
+  updateDimensions(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
+
   start() {
     if (!this.intervalTimerReference) {
       this.intervalTimerReference = setInterval(() => {
@@ -107,7 +112,7 @@ export class EnvironmentConroller {
     }
   }
 
-  pause() {
+  stop() {
     if (this.intervalTimerReference) {
       clearInterval(this.intervalTimerReference);
     }

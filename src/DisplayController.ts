@@ -1,4 +1,4 @@
-import { Atom, AtomGroup } from "./AtomModels";
+import { Atom } from "./AtomModels";
 
 export class DisplayController {
   targetFrameRate: number;
@@ -50,6 +50,11 @@ export class DisplayController {
     this.time = null;
   }
 
+  updateDimensions(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
+
   start() {
     if (!this.isPlaying) {
       this.isPlaying = true;
@@ -58,14 +63,20 @@ export class DisplayController {
       });
     }
   }
-  pause() {
+
+  stop() {
     if (this.isPlaying) {
       cancelAnimationFrame(this.timerReference as number);
       this.isPlaying = false;
-      this.time = null;
       this.lastFrame = -1;
+      this.frame = 0;
+      this.totalFramesRendered = 0;
+      this.averageFrameRate = 0;
+      this.time = null;
     }
   }
+
+  reset() {}
 
   private renderAtom(atom: Atom) {
     this.canvasContext.beginPath();
@@ -90,7 +101,6 @@ export class DisplayController {
     if (this.frame > this.lastFrame) {
       this.totalFramesRendered++;
       this.averageFrameRate = this.totalFramesRendered / (timeDelta / 1000);
-      console.log(this.averageFrameRate);
       this.lastFrame = this.frame;
       this.canvasContext.clearRect(0, 0, this.width, this.height);
       for (const atom of this.atomsArray) {
@@ -102,13 +112,3 @@ export class DisplayController {
     });
   }
 }
-
-// function renderRectangle(
-//   context: CanvasRenderingContext2D,
-//   color: string,
-//   width: number,
-//   height: number
-// ) {
-//   context.fillStyle = color; // set the background color of the rectangle
-//   context.fillRect(0, 0, width, height); // position 0,0 and globally set width and height
-// }
